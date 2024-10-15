@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.8",
     "bcrypt": "^5.1.1",
     "casbin": "^5.31.0",
     "dotenv": "^16.4.5",

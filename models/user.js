@@ -12,6 +12,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  roles: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Role'
+  }
 })
 
 userSchema.set('toJSON', {

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const logger = require('./logger')
+const { newEnforcer } = require('casbin')
 
 const errorHandler = (error, request, response, next) => {
   logger.info('error message', error.message)
@@ -28,6 +29,7 @@ const errorHandler = (error, request, response, next) => {
 const tokenExtractor = (request, response, next) => {
   console.log('requestHead', request.header)
   const authorization = request.get('authorization')
+  console.log('auth is',authorization)
   if (authorization === undefined) { /* empty */ }
   else if (authorization && authorization.startsWith('Bearer ')) {
     const token = authorization.replace('Bearer ', '')
@@ -51,8 +53,38 @@ const userExtractor = async (request, response, next) => {
   next()
 }
 
+//casbin的enforcer
+const enforcement = async(request, response, next) => {
+  const enforcer = await newEnforcer('./model.conf', './policy.csv')
+
+  const method = request.method
+  const path = request.path
+
+  if( path === '/api/login' ){  //给一个api公共权限
+    return next()
+  }
+
+  const user = request.user.username
+  console.log('the user is', user)
+
+  console.log('user', user)
+  console.log('path', path)
+  console.log('method', method)
+
+  const allowed = await enforcer.enforce(user, path, method)
+
+  if(allowed){
+    next()
+  }
+  else{
+    response.status(403).send('Forbidden')
+  }
+
+}
+
 module.exports = {
   tokenExtractor,
   userExtractor,
-  errorHandler
+  errorHandler,
+  enforcement
 }

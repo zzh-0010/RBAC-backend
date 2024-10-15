@@ -1,5 +1,5 @@
 //简单的登录功能
-//直接用了包，什么啊我自己实现也可以
+//jwt直接用了包
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const loginRouter = require('express').Router()

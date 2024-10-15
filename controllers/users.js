@@ -1,6 +1,23 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
+const logger = require('../utils/logger')
+
+//get一下全部用户
+usersRouter.get('/', async (request, response) => {
+  const users = await User.find({})
+  response.status(200).json(users)
+})
+
+//获取特定用户
+usersRouter.get('/:id', async(request, response) => {
+  try{
+    const user = await User.findById(request.params.id)
+    response.status(200).json(user)
+  }catch(error){
+    logger.error(error)
+  }
+})
 
 //生成用户--注册
 usersRouter.post('/', async (request, response, next) => {
@@ -45,10 +62,6 @@ usersRouter.delete('/:id', async (request, response) => {
 
 //改？改用户名？晚点再说
 
-//get一下全部用户
-usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
-  response.status(200).json(users)
-})
+
 
 module.exports = usersRouter
