@@ -1,9 +1,5 @@
 node_modules
-
 requests
-
 model.conf
-
-policy.csv
-
 .env
+policy.csv
