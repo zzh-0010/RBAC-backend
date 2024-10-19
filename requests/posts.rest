@@ -1,0 +1,38 @@
+###创建用户，示例为创建内定用户“设备管理员”
+POST http://localhost:3003/api/users 
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlbmFudEFkbWluIiwiaWQiOiI2NzA0ZTkyYjExOTg4YzUzOTdjYTc1M2UiLCJpYXQiOjE3MjgzNzczMzMsImV4cCI6MTcyODM4MDkzM30.LELDjMJe9L9aoautzeUSncTL7vqplaVRF_gNmHb67Gw
+
+{
+    "username": "deviceOp",
+    "name": "Device Operator",
+    "password": "deviceop"
+}
+
+### 登录到内定用户“设备管理员”，拥有使用设备api的权限
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "deviceOp",
+    "password": "deviceop"
+}
+
+### 登录到内定用户“租户管理员”，拥有使用角色和用户的api权限
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "tenantAdmin",
+    "password": "root"
+}
+
+
+### 创建角色“设备管理员”，仅有租户管理员可以创建角色
+POST http://localhost:3003/api/roles
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlbmFudEFkbWluIiwiaWQiOiI2NzA0ZTkyYjExOTg4YzUzOTdjYTc1M2UiLCJpYXQiOjE3MjgzNzUyNDEsImV4cCI6MTcyODM3ODg0MX0.I1xNdvD86MeXt1gTw84gNOg5m4HllgcEquCFBIysDGQ
+
+{
+    "rolename": "deviceAdmin"
+}

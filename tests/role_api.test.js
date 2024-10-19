@@ -7,12 +7,18 @@ const assert = require('node:assert')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const Role = require('../models/role')
+const Device = require('../models/device')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 
+
 describe('Base roles', () => {
   beforeEach(async () => {
+
+    await Role.deleteMany({})
+    await User.deleteMany({})
+    await Device.deleteMany({})
 
     const tenantAdmin = new Role({ rolename: 'tenant_admin' })
     await tenantAdmin.save()
@@ -20,14 +26,19 @@ describe('Base roles', () => {
     const deviceOperator = new Role({ rolename: 'device_operator' })
     await deviceOperator.save()
 
-    const passwordHash = await bcrypt('secret', 10)
+    let passwordHash = await bcrypt.hash('secret', 10)
     const deviceOp = new User({ username: 'deviceOp', name: 'device_operator', passwordHash })
 
     await deviceOp.save()
 
+    passwordHash = await bcrypt.hash('root', 10)
+    const tenantAd = new User({ username: 'tenantAdmin', name: 'tenant_testing', passwordHash})
+
+    await tenantAd.save()
+
   })
 
-  test('device operator can create a device & a device Owner is created', async () => {
+  test('device operator can create a device', async () => {
     const devicesAtSt = await helper.deviceInDb()
 
     const deviceOp = {
@@ -35,7 +46,7 @@ describe('Base roles', () => {
       password: 'secret'
     }
 
-    const response = await api.post('/api/login').send(deviceOp)
+    let response = await api.post('/api/login').send(deviceOp)
     const token = response.body.token
 
     const testDevice = {
@@ -44,7 +55,8 @@ describe('Base roles', () => {
       last_update: Date.now()
     }
 
-    await api
+    response = await api
+      .post('/api/devices')
       .set('Authorization', `Bearer ${token}`)
       .send(testDevice)
       .expect(201)
@@ -52,9 +64,38 @@ describe('Base roles', () => {
 
     const devicesAtEn = await helper.deviceInDb()
 
-    assert.strictEqual(devicesAtSt.length, devicesAtEn.length + 1)
+    assert.strictEqual(devicesAtSt.length + 1, devicesAtEn.length)
     assert(response.body.devicename.includes('test'))
+    assert(response.body.status.includes('Off'))
+  })
 
+  test('Only specified role can acces the reference api', async () => {
+    const devicesAtSt = await helper.deviceInDb()
+
+    const tenantAdmin = {
+      username: 'tenantAdmin',
+      password: 'root'
+    }
+
+    let response = await api.post('/api/login').send(tenantAdmin)
+    const token = response.body.token
+
+    //尝试创建设备
+    const testDevice = {
+      devicename: 'test',
+      status: 'Off',
+      last_update: Date.now()
+    }
+
+    response = await api
+      .post('/api/devices')
+      .set('Authorization', `Bearer ${token}`)
+      .send(testDevice)
+      .expect(403)
+
+    const devicesAtEn = await helper.deviceInDb()
+    assert.strictEqual(devicesAtSt.length, devicesAtEn.length)
+    assert(response.error.text.includes('Forbidden'))
   })
 })
 

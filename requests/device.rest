@@ -1,0 +1,35 @@
+### 登录到设备管理员，可以使用设备相关api
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "deviceOp",
+    "password": "deviceop"
+}
+
+### 创建一个新的设备，将上方登录返回的token复制到下方的请求头后面。
+POST http://localhost:3003/api/devices
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRldmljZU9wIiwiaWQiOiI2NzA0ZjIzZTRjYjA2MjBjMzkzZGRhZDMiLCJpYXQiOjE3MjkyMzA4MTQsImV4cCI6MTcyOTIzNDQxNH0.qVmn1DbvyCYOjMSLt92y033Dp83eCca1J0vPmrR5B3U
+
+{
+    "devicename": "Light",
+    "status": "Off"
+}
+
+### 获得设备清单，同样需要有权限
+GET http://localhost:3003/api/devices
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRldmljZU9wIiwiaWQiOiI2NzA0ZjIzZTRjYjA2MjBjMzkzZGRhZDMiLCJpYXQiOjE3MjkyMzA4MTQsImV4cCI6MTcyOTIzNDQxNH0.qVmn1DbvyCYOjMSLt92y033Dp83eCca1J0vPmrR5B3U
+
+### 登录到另一个用户“租户管理员”，其没有操作设备api的权限，发送设备相关api应当返回“403 Forbidden”
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "tenantAdmin",
+    "password": "root"
+}
+
+### 获得设备清单，应当返回403
+GET http://localhost:3003/api/devices
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlbmFudEFkbWluIiwiaWQiOiI2NzA0ZTkyYjExOTg4YzUzOTdjYTc1M2UiLCJpYXQiOjE3MjkyMzEwMTYsImV4cCI6MTcyOTIzNDYxNn0.feQX3cabAB56gE-c2_5AYAuum5KTJpHsec65Jd3-MaE

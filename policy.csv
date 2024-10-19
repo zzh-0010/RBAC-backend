@@ -1,0 +1,13 @@
+p, user_admin, /api/users, GET
+p, user_admin, /api/users, POST
+p, tenant_admin, /api/roles, GET
+p, tenant_admin, /api/roles, POST
+p, tenant_admin, /api/roles, DELETE
+p, device_operator, /api/devices, GET
+p, device_operator, /api/devices, POST
+p, device_operator, /api/devices, DELETE
+
+g, tenantAdmin, tenant_admin
+g, tenantAdmin, user_admin
+g, deviceOp, device_operator
+g, deviceOp, Light_Owner

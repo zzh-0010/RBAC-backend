@@ -1,0 +1,8 @@
+### 查看全部用户，仅有租户管理员可以访问
+GET http://localhost:3003/api/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRheWxvciIsImlkIjoiNjZmZmEyZmM4NjU0ZGI3MWFiMTVkNWIzIiwiaWF0IjoxNzI4MDMxMTYzLCJleHAiOjE3MjgwMzQ3NjN9.RHveVSz_y8ombHwLijE_RLCSPTqz7P1s4AoGJ7zE70Y
+
+
+### 查看全部角色，仅有租户管理员可以访问
+GET http://localhost:3003/api/roles
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRldmljZU9wIiwiaWQiOiI2NzA0ZjIzZTRjYjA2MjBjMzkzZGRhZDMiLCJpYXQiOjE3MjkwNTAzMzgsImV4cCI6MTcyOTA1MzkzOH0.LbXClwaxM8OgNg_VUGU8es3nJvtEfQMJnGBI1y3I2jQ

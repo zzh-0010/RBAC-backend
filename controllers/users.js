@@ -60,8 +60,6 @@ usersRouter.delete('/:id', async (request, response) => {
   }
 })
 
-//改？改用户名？晚点再说
-
 
 
 module.exports = usersRouter

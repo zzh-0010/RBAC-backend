@@ -27,9 +27,7 @@ const errorHandler = (error, request, response, next) => {
 
 //提取验证信息中的token
 const tokenExtractor = (request, response, next) => {
-  console.log('requestHead', request.header)
   const authorization = request.get('authorization')
-  console.log('auth is',authorization)
   if (authorization === undefined) { /* empty */ }
   else if (authorization && authorization.startsWith('Bearer ')) {
     const token = authorization.replace('Bearer ', '')
@@ -43,7 +41,6 @@ const userExtractor = async (request, response, next) => {
   const authorization = request.get('authorization')
   if (authorization === undefined) { /* empty */ } else {
     const decodedToken = jwt.verify(request.token, process.env.SECRET) //返回解码成功的对象？
-    console.log('decodedToken: ', decodedToken)
     if (!decodedToken.id) {
       request.token = undefined
       return response.status(401).json({ error: 'token invalid' })
@@ -65,12 +62,6 @@ const enforcement = async(request, response, next) => {
   }
 
   const user = request.user.username
-  console.log('the user is', user)
-
-  console.log('user', user)
-  console.log('path', path)
-  console.log('method', method)
-
   const allowed = await enforcer.enforce(user, path, method)
 
   if(allowed){

@@ -1,7 +1,7 @@
 const devicesRouter = require('express').Router()
 const Device = require('../models/device')
 const logger = require('../utils/logger')
-const { newEnforcer } = require('casbin')
+//const { newEnforcer } = require('casbin')
 
 //先写两个api进行测试
 
@@ -32,31 +32,31 @@ devicesRouter.post('/', async (request, response) => {
 
   const device = new Device({ ...body, last_update: timeNow })
 
-  const enforcer = await newEnforcer('./model.conf', './policy.csv')
+  // const enforcer = await newEnforcer('./model.conf', './policy.csv')
 
-  const deviceName = device.devicename
+  // const deviceName = device.devicename
 
-  console.log('what does devide here looks like? ', device)
+  // console.log('what does devide here looks like? ', device)
 
-  const deviceId = device._id.toString()
+  // const deviceId = device._id.toString()
 
   //每增加一个设备，就增加一个设备owner
 
-  await enforcer.addRoleForUser(deviceName, `${deviceName}_Owner`)
+  // await enforcer.addRoleForUser(deviceName, `${deviceName}_Owner`)
 
-  await enforcer.addPermissionForUser( `${deviceName}_Owner`, `/api/devices/${deviceId}`, 'GET' )
+  // await enforcer.addPermissionForUser( `${deviceName}_Owner`, `/api/devices/${deviceId}`, 'GET' )
 
-  //先直接给device operator这个设备的owner吧
+  //先直接给device operator这个设备的owner吧, 后期会进行分层
 
-  await enforcer.addRoleForUser('deviceOp', `${deviceName}_Owner`)
+  //await enforcer.addRoleForUser('deviceOp', `${deviceName}_Owner`)
 
   //device operator拥有每个设备的权限
 
-  const saved = enforcer.savePolicy()
+  // const saved = enforcer.savePolicy()
 
-  if(saved){
-    logger.info('New policy added!')
-  }
+  // if(saved){
+  //   logger.info('New policy added!')
+  // }
 
   try {
     await device.save()
